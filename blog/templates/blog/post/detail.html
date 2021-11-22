@@ -1,0 +1,79 @@
+{% extends "blog/base.html" %}
+{% load blog_tags %}
+{% load crispy_forms_tags %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+
+<!-- Post Content Column -->
+<div class="col-lg-8">
+    <!-- Title -->
+    <h1 class="mt-4">{{ post.title }}</h1>
+
+    <!-- Author -->
+    <p class="lead">
+        by <a href="#">{{ post.author }}</a>
+    </p>
+
+    <hr>
+    <!-- Date/Time -->    
+    <p class="date">
+        Published {{ post.publish }} by {{ post.author }}
+    </p>
+
+    <hr>
+    <!-- Preview Image -->
+    <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+    
+    <hr>
+    <!-- Post Content -->
+    {% comment %} {{ post.body|linebreaks }} {% endcomment %}
+    {{ post.body|markdown }}    
+    <hr>
+
+    <h2>Similar posts</h2>
+    {% for post in similar_posts %}
+    <p>
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+    </p>
+    {% empty %}
+    There are no similar posts yet.
+    {% endfor %}
+
+    {% with comments.count as total_comments %}
+        <h2>
+            {{ total_comments }} Comment{{ total_comments|pluralize }}
+        </h2>
+    {% endwith %}    
+    <!-- Single Comment -->
+    {% for comment in comments %}
+        <div class="media mb-4">
+            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">    
+            <div class="media-body">
+                <h5 class="mt-0">Comment {{ forloop.counter }} by {{ comment.name }}</h5>
+                {{ comment.created }}            
+                {{ comment.body|linebreaks }}
+            </div>        
+        </div>
+        {% empty %}
+        <p>There are no comments yet.</p>
+    {% endfor %}
+
+    <!-- Comments Form -->
+    <div class="card my-4">
+        <div class="card-body">    
+        {% if new_comment %}
+            <h5 class="card-header">Your comment has been added.</h5>        
+        {% else %}
+            <h5 class="card-header">Leave a Comment:</h5>
+            <form class="form-group" method="post">
+                {{ comment_form | crispy }}
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+                {% comment %} <p><input type="submit" value="Add comment"></p> {% endcomment %}
+                
+            </form>
+        {% endif %}  
+        </div>        
+    </div>    
+</div>
+{% endblock %}

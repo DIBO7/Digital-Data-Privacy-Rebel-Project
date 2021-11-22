@@ -1,0 +1,49 @@
+{% extends "blog/base.html" %}
+{% load blog_tags %}
+{% block title %}My Blog{% endblock %}
+{% block content %}
+<!-- Blog Entries Column -->
+<div class="col-md-8">
+    <h1 class="my-4">Buffteks
+        <small>Technology musings for WT</small>
+    </h1>
+    {% if tag %}
+    <h2>Posts tagged with "{{ tag.name }}"</h2>
+    {% endif %}
+    {% for post in posts %}
+    <!-- Blog Post -->
+    <div class="card mb-4">
+        <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
+        <div class="card-body">
+            <h2>
+                <a class="card-title" href="{{ post.get_absolute_url }}">
+                    {{ post.title }}
+                </a>
+            </h2>        
+            <p class="tags">
+                Tags:
+                {% comment %} Tags: {{ post.tags.all|join:", " }} {% endcomment %}
+                {% for tag in post.tags.all %}
+                    <a href="{% url "blog:post_list_by_tag" tag.slug %}">
+                        {{ tag.name }}
+                    </a>
+                    {% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            <p class="card-text">
+                {% comment %} {{ post.body|truncatewords:30|linebreaks }}{% endcomment %}
+                {{ post.body|markdown|truncatewords_html:30}}                
+            </p>
+            <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Read More &rarr;</a>
+        </div>
+        <div class="card-footer text-muted">
+            <p class="date">
+                Published {{ post.publish }} by {{ post.author }}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+    {% include "pagination.html" with page=posts %}      
+</div>
+
+{% endblock %}
