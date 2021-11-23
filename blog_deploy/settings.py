@@ -28,14 +28,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 #SECRET_KEY = os.environ.get('SECRET_KEY')
-SECRET_KEY = '9$vw346tn^f78o7fi@yj8oco_x$*%4ew6$wicw3^$9hhbb$#-t'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = True
+DEBUG = False
 
 if settings.DEBUG:
     ALLOWED_HOSTS = ['*']
 else:
-    ALLOWED_HOSTS = ['https://test75-1.herokuapp.com', '159.223.152.181', '.herokuapp.com', 'localhost', '127.0.0.1','127.0.0.0',"*"]
+    ALLOWED_HOSTS = ['https://test75-1.herokuapp.com', '159.223.152.181', '.herokuapp.com', 'localhost', '127.0.0.1'] #removed "*" and ,'127.0.0.0'
 
 SITE_ID = 1
 
@@ -86,22 +86,22 @@ MIDDLEWARE = [
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'HW75',
-        'USER': 'slimjim821',
-        'PASSWORD': 'Missy2003',
-        'HOST': 'localhost',
+        'NAME': os.environ.get("DB_NAME"), #'HW75',
+        'USER': os.environ.get("DB_USER"), #'slimjim821',
+        'PASSWORD': os.environ.get("DB_PASSWORD"), #'Missy2003',
+        'HOST': os.environ.get("DB_HOST"), #'localhost',
         'PORT': '',
     }
 }
+'''
 import dj_database_url
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
 
-SECRET_KEY = '9$vw346tn^f78o7fi@yj8oco_x$*%4ew6$wicw3^$9hhbb$#-t'
 
 ROOT_URLCONF = 'blog_deploy.urls'
 
@@ -160,7 +160,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static")
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # MEDIA/UPLOADS
 MEDIA_URL = '/media/'
@@ -174,13 +178,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # WHITENOISE_USE_FINDERS = True
 
 # email stuff - using mailgun
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_PORT = os.environ.get('EMAIL_PORT')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+#EMAIL_HOST = os.environ.get('EMAIL_HOST')
+#EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+#EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+#EMAIL_PORT = os.environ.get('EMAIL_PORT')
+#EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
 
 # Django crispy forms
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
